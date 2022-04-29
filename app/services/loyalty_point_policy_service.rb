@@ -64,14 +64,13 @@ class LoyaltyPointPolicyService
   private
 
   def rewardable?
-    binding.pry
     spendings = user.spendings
     spendings = spendings.where(
                             "created_at > ?",
                             user.last_reward_date
                           ) if user.last_reward_date
 
-    spendings.sum(:amount) > 100 
+    spendings.sum(:amount) > 100
   end
 
   def standard_reward
