@@ -9,7 +9,7 @@ class Spending < ApplicationRecord
   end
 
   def reward_points
-    points = self.amount / 10
+    points =  10
     points  = (points * 2) if self.foreign_spending
     points
   end

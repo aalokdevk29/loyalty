@@ -30,24 +30,26 @@ class LoyaltyPointPolicyService
   end
 
   def generate_reward(spending_id)
-    return 10 if rewardable?
+    if rewardable?
+      @spending = Spending.find(spending_id)
+      reward = standard_reward
 
-    @spending = Spending.find(spending_id)
-    reward = standard_reward
+      if coffee_reward?
+        reward[:reward_title] = 'free_coffee'
+      end
 
-    if coffee_reward?
-      reward[:reward_title] = 'free_coffee'
+      if rebatable?
+        reward[:reward_title] = 'rebate'
+      end
+
+      if movie_ticket?
+        reward[:reward_title] = 'movie_ticket'
+      end
+
+      reward
+    else
+      nil
     end
-
-    if rebatable?
-      reward[:reward_title] = 'rebate'
-    end
-
-    if movie_ticket?
-      reward[:reward_title] = 'movie_ticket'
-    end
-
-    reward
   end
 
   def quarterly_reward
@@ -62,13 +64,14 @@ class LoyaltyPointPolicyService
   private
 
   def rewardable?
+    binding.pry
     spendings = user.spendings
     spendings = spendings.where(
                             "created_at > ?",
                             user.last_reward_date
                           ) if user.last_reward_date
 
-    spendings.sum(:amount) >= 100
+    spendings.sum(:amount) > 100 
   end
 
   def standard_reward
