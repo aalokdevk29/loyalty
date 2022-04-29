@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_29_035648) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_29_045040) do
+  create_table "loyalties", force: :cascade do |t|
+    t.float "points"
+    t.integer "spending_id", null: false
+    t.datetime "expiry"
+    t.integer "reward_title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["spending_id"], name: "index_loyalties_on_spending_id"
+  end
+
   create_table "spendings", force: :cascade do |t|
     t.float "amount"
     t.datetime "expiry"
@@ -33,5 +43,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_29_035648) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "loyalties", "spendings"
   add_foreign_key "spendings", "users"
 end
